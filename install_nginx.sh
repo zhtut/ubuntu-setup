@@ -9,13 +9,19 @@ else
 fi
 
 if [[ ! -e ${ssl_path} ]]; then
-    sudo mkdir -p ssl_path
+    echo "文件夹${ssl_path}不存在，需要创建"
+    sudo mkdir -p ${ssl_path}
     need_reboot=1
+else
+    echo "文件夹${ssl_path}存在"
 fi
 
-if [[ $(ls ${ssl_path}) == "" ]]; then
+if [[ $(sudo ls ${ssl_path}) == "" ]]; then
+    echo "拷贝证书到${ssl_path}"
     sudo cp v2ray_press_nginx_certs/* ${ssl_path}
     need_reboot=1
+else
+    echo "${ssl_path}目录下已有证书"
 fi
 
 config_path="/etc/nginx/sites-available/default"
@@ -30,4 +36,6 @@ fi
 if [[ ${need_reboot} == 1 ]]; then
     echo "重启nginx"
     sudo service nginx restart
+else
+   echo '不需要重启nginx'
 fi

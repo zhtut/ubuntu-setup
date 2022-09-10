@@ -2,7 +2,7 @@ clone_url() {
     url="$1"
     git_name=${url##*/}
     git_name=${git_name%.*}
-    if [[ ! -e ${git_name} ]]; then
+    if [[ -e ${git_name} ]]; then
         echo "${git_name}已存在"
     else
         git clone ${url}
