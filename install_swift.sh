@@ -55,11 +55,12 @@ if [ -e $swift_path ]; then
     now_version=$(swift --version)
     latest_version=$(get_latest_swift_version)
     version_str="Apple Swift version ${latest_version} "
+    echo "now_version=${now_version}, version_str=${version_str}"
     if [[ $(echo ${now_version} | grep ${version_str}) != "" ]]; then
         echo "${now_version}当前版本已是最新版${latest_version}"
     else
         echo 'Swift 旧版本已存在，删除旧版，下载最新版本'
-        rm -rf $swift_path
+        sudo rm -rf $swift_path
         download_swift_package
     fi
 else
