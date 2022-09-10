@@ -9,7 +9,7 @@ install_postgres() {
     origin="#listen_addresses = 'localhost'"
     replace="listen_addresses = '*'"
     sudo sed -i "s|${origin}|${replace}|" ${postgresql_conf}
-    sudo cat ${postgresql_conf}
+    echo $(sudo cat ${postgresql_conf} | grep "listen_addresses")
 
     echo "修改可访问的ip段"
     export host="host all all 0.0.0.0/0 md5"
@@ -17,7 +17,7 @@ install_postgres() {
     export pg_hba_conf="/etc/postgresql/*/main/pg_hba.conf"
     echo "${host}" | sudo tee -a ${pg_hba_conf}
     echo "${host_ipv6}" | sudo tee -a ${pg_hba_conf}
-    sudo cat ${pg_hba_conf}
+    echo $(sudo cat ${pg_hba_conf} | grep "host all")
 
     echo '需要设定密码'
     sudo -u postgres psql
