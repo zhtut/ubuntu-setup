@@ -38,6 +38,8 @@ download_swift_package() {
     rm ${tar_file_name}
     sudo cp -rf $folder_name $swift_path
     rm -rf $folder_name
+
+    swift --version
 }
 
 import_sign_key() {
@@ -46,8 +48,15 @@ import_sign_key() {
 
 config_envrioment() {
     profile_path="/etc/profile"
-    echo "\n  PATH=\"${swift_path}/usr/bin:\$PATH\"" | sudo tee -a ${profile_path}
-    sudo source ${profile_path}
+    if [[ $(cat ${profile_path}) =~ "${swift_path}" ]]; then
+        echo 'profile已有配置'
+    else
+        echo '开始配置环境变量'
+        echo "
+PATH=\"${swift_path}/usr/bin:\$PATH\"" | sudo tee -a ${profile_path}
+        sudo cat ${profile_path}
+    fi
+    source ${profile_path}
 }
 
 if [[ $(echo $PATH) =~ "swift" ]]; then
@@ -66,12 +75,11 @@ fi
 if [[ -e $swift_path ]]; then
     now_version=$(swift --version)
     latest_version=$(get_latest_swift_version)
-    version_str="Apple Swift version ${latest_version} "
-    echo "now_version=${now_version}, version_str=${version_str}"
+    version_str="Swift version ${latest_version} "
     if [[ ${now_version} =~ ${version_str} ]]; then
         echo "${now_version}当前版本已是最新版${latest_version}"
     else
-        echo 'Swift 旧版本已存在，删除旧版，下载最新版本'
+        echo "Swift 旧版本${now_version}已存在，删除旧版，下载最新版本${latest_version}"
         sudo rm -rf $swift_path
         download_swift_package
     fi
@@ -79,5 +87,3 @@ else
     echo "swift路径不存在，第一次下载"
     download_swift_package
 fi
-
-swift --version
