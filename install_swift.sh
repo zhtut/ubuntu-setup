@@ -37,7 +37,8 @@ download_swift_package() {
     curl -O "https://download.swift.org/swift-$swift_version-release/ubuntu2004/swift-$swift_version-RELEASE/$tar_file_name" ${tar_file_path}
     tar xvf ${tar_file_path}
     rm ${tar_file_path}
-    sudo mv -r $folder_name $swift_path
+    sudo cp -rf $folder_name $swift_path
+    rm -rf $folder_name
 }
 
 import_sign_key() {
