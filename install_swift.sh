@@ -33,10 +33,9 @@ download_swift_package() {
     swift_version=$(get_latest_swift_version)
     folder_name=swift-$swift_version-RELEASE-ubuntu20.04
     tar_file_name=${folder_name}.tar.gz
-    tar_file_path=${tar_file_name}
-    curl -O "https://download.swift.org/swift-$swift_version-release/ubuntu2004/swift-$swift_version-RELEASE/$tar_file_name" ${tar_file_path}
-    tar xvf ${tar_file_path}
-    rm ${tar_file_path}
+    curl -O "https://download.swift.org/swift-$swift_version-release/ubuntu2004/swift-$swift_version-RELEASE/$tar_file_name"
+    tar xvf ${tar_file_name}
+    rm ${tar_file_name}
     sudo cp -rf $folder_name $swift_path
     rm -rf $folder_name
 }
@@ -56,7 +55,7 @@ if [ -e $swift_path ]; then
     now_version=$(swift --version)
     latest_version=$(get_latest_swift_version)
     version_str="Apple Swift version ${latest_version} "
-    if [[ ${now_version} =~ ${version_str} ]]; then
+    if [[ $(echo ${now_version} | grep ${version_str}) != "" ]]; then
         echo "${now_version}当前版本已是最新版${latest_version}"
     else
         echo 'Swift 旧版本已存在，删除旧版，下载最新版本'
@@ -68,14 +67,14 @@ else
     download_swift_package
 fi
 
-if [[ $(sudo apt show uuid-dev) =~ "No packages found" ]]; then
+if [[ $(sudo apt show uuid-dev | grep "No packages found") != "" ]]; then
     install_dependency
     import_sign_key
 else
     echo "已配置安装第三方依赖"
 fi
 
-if [[ $(echo $PATH) =~ "swift" ]]; then
+if [[ $(echo $PATH | grep "swift") != "" ]]; then
     echo "已配置好环境变量"
 else
     config_envrioment

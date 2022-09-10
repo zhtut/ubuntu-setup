@@ -22,7 +22,7 @@ enable_swap() {
 
 swap_info=$(free -m | grep "Swap")
 swap_info=${swap_info// /}
-if [[ ${swap_info} =~ "010" ]]; then
+if [[ $(echo ${swap_info} | grep "010") != "" ]]; then
     enable_swap
 else
     echo '已开启swap_info'
