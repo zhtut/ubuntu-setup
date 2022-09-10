@@ -1,8 +1,7 @@
 ssl_path="/etc/nginx/ssl"
 need_reboot=0
 
-status=$(sudo service nginx status)
-if [[ $(echo ${status} | grep "Unit nginx.service could not be found.") != "" ]]; then
+if [[ $(sudo service nginx status) =~ "Unit nginx.service could not be found." ]]; then
     sudo apt install nginx
     need_reboot=1
 else
@@ -20,7 +19,7 @@ if [[ $(ls ${ssl_path}) == "" ]]; then
 fi
 
 config_path="/etc/nginx/sites-available/default"
-if [[ $(cat ${config_path} | grep "ssl/v2ray.press.key") != "" ]]; then
+if [[ $(cat ${config_path}) =~ "ssl/v2ray.press.key" ]]; then
     echo "已有配置文件"
 else
     echo "拷贝配置文件"

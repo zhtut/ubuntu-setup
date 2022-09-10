@@ -56,7 +56,7 @@ if [[ -e $swift_path ]]; then
     latest_version=$(get_latest_swift_version)
     version_str="Apple Swift version ${latest_version} "
     echo "now_version=${now_version}, version_str=${version_str}"
-    if [[ $(echo ${now_version} | grep ${version_str}) != "" ]]; then
+    if [[ ${now_version} =~ ${version_str} ]]; then
         echo "${now_version}当前版本已是最新版${latest_version}"
     else
         echo 'Swift 旧版本已存在，删除旧版，下载最新版本'
@@ -68,14 +68,14 @@ else
     download_swift_package
 fi
 
-if [[ $(sudo apt show uuid-dev | grep "No packages found") != "" ]]; then
+if [[ $(sudo apt show uuid-dev) =~ "No packages found" ]]; then
     install_dependency
     import_sign_key
 else
     echo "已配置安装第三方依赖"
 fi
 
-if [[ $(echo $PATH | grep "swift") != "" ]]; then
+if [[ $(echo $PATH) =~ "swift" ]]; then
     echo "已配置好环境变量"
 else
     config_envrioment
