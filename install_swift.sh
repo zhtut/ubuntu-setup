@@ -51,7 +51,7 @@ config_envrioment() {
     sudo source ${profile_path}
 }
 
-if [ -e $swift_path ]; then
+if [[ -e $swift_path ]]; then
     now_version=$(swift --version)
     latest_version=$(get_latest_swift_version)
     version_str="Apple Swift version ${latest_version} "
