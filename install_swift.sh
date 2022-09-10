@@ -1,7 +1,8 @@
 #!/bin/bash
 #install_swift.sh
 
-new_folder_name="$HOME/swift-RELEASE-ubuntu20.04"
+swift_folder="swift-toolchain"
+swift_path="/etc/${swift_folder}"
 
 install_dependency() {
   sudo apt-get update
@@ -21,8 +22,7 @@ install_dependency() {
     pkg-config \
     tzdata \
     uuid-dev \
-    zlib1g-dev \
-    libmysqlclient-dev
+    zlib1g-dev
 }
 
 get_latest_swift_version() {
@@ -35,13 +35,13 @@ get_latest_swift_version() {
 
 download_swift_package() {
   swift_version=$(get_latest_swift_version)
-  folder_name=$HOME/swift-$swift_version-RELEASE-ubuntu20.04
+  folder_name=swift-$swift_version-RELEASE-ubuntu20.04
   tar_file_name=${folder_name}.tar.gz
-  tar_file_path=$HOME/${tar_file_name}
+  tar_file_path=${tar_file_name}
   curl -O "https://download.swift.org/swift-$swift_version-release/ubuntu2004/swift-$swift_version-RELEASE/$tar_file_name" ${tar_file_path}
   tar xvf ${tar_file_path}
   rm ${tar_file_path}
-  mv $tar_file_path $new_folder_name
+  sudo mv -r $folder_name $swift_path
 }
 
 import_sign_key() {
@@ -50,26 +50,41 @@ import_sign_key() {
 }
 
 config_envrioment() {
-  profile_content=$(cat .profile)
-  echo "$profile_content\n  PATH=\"\$HOME/$new_folder_name/usr/bin:\$PATH\"" >$HOME/.profile
-  source .profile
+  profile_path="/etc/profile"
+  profile_content=$(sudo cat ${profile_path})
+  echo "$profile_content\n  PATH=\"${swift_path}/usr/bin:\$PATH\"" >${profile_path}
+  sudo source ${profile_path}
 }
 
-if [ -e $new_folder_name ]; then
+curr_pwd=$(pwd)
+cd /etc
+if [ -e $swift_path ]; then
   now_version=$(swift --version)
   latest_version=$(get_latest_swift_version)
   version_str="Apple Swift version ${latest_version} "
   if [[ ${now_version} =~ ${version_str} ]]; then
     echo "${now_version}当前版本已是最新版${latest_version}"
   else
-    rm -rf $new_folder_name
-    echo 'Swift 旧版本已存在，删除旧版，下载最新版本即可'
+    echo 'Swift 旧版本已存在，删除旧版，下载最新版本'
+    rm -rf $swift_path
+    download_swift_package
   fi
 else
+  echo "swift路径不存在，第一次下载"
+  download_swift_package
+fi
+
+if [[ $(sudo apt show uuid-dev) =~ "No packages found" ]]; then
   install_dependency
   import_sign_key
+else
+  echo "已配置安装第三方依赖"
+fi
+
+if [[ $(echo $PATH) =~ "swift" ]]; then
+  echo "已配置好环境变量"
+else
   config_envrioment
 fi
-download_swift_package
 
 swift --version
