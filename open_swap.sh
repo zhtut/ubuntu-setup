@@ -21,10 +21,9 @@ enable_swap() {
 }
 
 swap_info=$(free -m | grep "Swap")
-if [[ ${swap_info} =~ "6144" ]]; then
-    echo '已开启swap_info'
-else
+swap_info=${swap_info// /}
+if [[ ${swap_info} =~ "010" ]]; then
     enable_swap
+else
+    echo '已开启swap_info'
 fi
-#命令查看一下，你将看到类似下面的输出。
-#Swap: 2047 0 2047
