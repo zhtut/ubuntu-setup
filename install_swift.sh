@@ -46,10 +46,22 @@ import_sign_key() {
 
 config_envrioment() {
     profile_path="/etc/profile"
-    profile_content=$(sudo cat ${profile_path})
-    echo "$profile_content\n  PATH=\"${swift_path}/usr/bin:\$PATH\"" >${profile_path}
+    echo "\n  PATH=\"${swift_path}/usr/bin:\$PATH\"" | sudo tee -a ${profile_path}
     sudo source ${profile_path}
 }
+
+if [[ $(echo $PATH) =~ "swift" ]]; then
+    echo "已配置好环境变量"
+else
+    config_envrioment
+fi
+
+if [[ $(sudo apt show uuid-dev) =~ "No packages found" ]]; then
+    install_dependency
+    import_sign_key
+else
+    echo "已配置安装第三方依赖"
+fi
 
 if [[ -e $swift_path ]]; then
     now_version=$(swift --version)
@@ -66,19 +78,6 @@ if [[ -e $swift_path ]]; then
 else
     echo "swift路径不存在，第一次下载"
     download_swift_package
-fi
-
-if [[ $(sudo apt show uuid-dev) =~ "No packages found" ]]; then
-    install_dependency
-    import_sign_key
-else
-    echo "已配置安装第三方依赖"
-fi
-
-if [[ $(echo $PATH) =~ "swift" ]]; then
-    echo "已配置好环境变量"
-else
-    config_envrioment
 fi
 
 swift --version
