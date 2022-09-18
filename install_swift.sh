@@ -57,24 +57,23 @@ config_envrioment() {
     else
         echo '开始配置环境变量'
         echo "
-PATH=\"${swift_path}/usr/bin:\$PATH\"" | sudo tee -a ${profile_path}
+export PATH=\"${swift_path}/usr/bin:\$PATH\"" | sudo tee -a ${profile_path}
         sudo cat ${profile_path}
     fi
     source ${profile_path}
 }
 
-if [[ $(echo $PATH) =~ "swift" ]]; then
+if [[ $(echo $PATH) =~ "${swift_path}" ]]; then
     echo "已配置好环境变量"
 else
     config_envrioment
 fi
 
-if [[ $(sudo apt show uuid-dev) =~ "No packages found" ]]; then
-    install_dependency
-    import_sign_key
-else
-    echo "已配置安装第三方依赖"
-fi
+echo "配置安装第三方依赖"
+install_dependency
+
+echo "配置签名key"
+import_sign_key
 
 latest_version="$1"
 if [[ ${latest_version} == "" ]]; then
