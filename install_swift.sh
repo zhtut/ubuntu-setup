@@ -1,5 +1,7 @@
 swift_folder="swift-toolchain"
 swift_path="/etc/${swift_folder}"
+profile_path="/etc/profile"
+path_env="${swift_path}/usr/bin"
 
 install_dependency() {
     sudo apt install \
@@ -51,19 +53,18 @@ import_sign_key() {
 }
 
 config_envrioment() {
-    profile_path="/etc/profile"
-    if [[ $(cat ${profile_path}) =~ "${swift_path}" ]]; then
+    if [[ $(cat ${profile_path}) =~ "${path_env}" ]]; then
         echo 'profile已有配置'
     else
         echo '开始配置环境变量'
         echo "
-export PATH=\"${swift_path}/usr/bin:\$PATH\"" | sudo tee -a ${profile_path}
+export PATH=\"${path_env}:\$PATH\"" | sudo tee -a ${profile_path}
         sudo cat ${profile_path}
     fi
     source ${profile_path}
 }
 
-if [[ $(echo $PATH) =~ "${swift_path}" ]]; then
+if [[ $(echo $PATH) =~ "${path_env}" ]]; then
     echo "已配置好环境变量"
 else
     config_envrioment
