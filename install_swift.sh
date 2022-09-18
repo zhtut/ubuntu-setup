@@ -76,12 +76,12 @@ else
     echo "已配置安装第三方依赖"
 fi
 
+latest_version="$1"
+if [[ ${latest_version} == "" ]]; then
+    latest_version=$(get_latest_swift_version)
+fi
 if [[ -e $swift_path ]]; then
     now_version=$(swift --version)
-    latest_version="$1"
-    if [[ ${latest_version} == "" ]]; then
-        latest_version=$(get_latest_swift_version)
-    fi
     version_str="Swift version ${latest_version} "
     if [[ ${now_version} =~ ${version_str} ]]; then
         echo "${now_version}当前版本已是最新版${latest_version}"
@@ -92,5 +92,5 @@ if [[ -e $swift_path ]]; then
     fi
 else
     echo "swift路径不存在，第一次下载"
-    download_swift_package
+    download_swift_package ${latest_version}
 fi
