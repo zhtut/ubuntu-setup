@@ -34,6 +34,7 @@ download_swift_package() {
     if [[ ${swift_version} == "" ]]; then
         swift_version=$(get_latest_swift_version)
     fi
+    echo "准备下载${swift_version}版本"
     folder_name=swift-$swift_version-RELEASE-ubuntu20.04
     tar_file_name=${folder_name}.tar.gz
     curl -O "https://download.swift.org/swift-$swift_version-release/ubuntu2004/swift-$swift_version-RELEASE/$tar_file_name"
