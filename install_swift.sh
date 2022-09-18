@@ -30,7 +30,10 @@ get_latest_swift_version() {
 }
 
 download_swift_package() {
-    swift_version=$(get_latest_swift_version)
+    swift_version="$1"
+    if [[ ${swift_version} == "" ]]; then
+        swift_version=$(get_latest_swift_version)
+    fi
     folder_name=swift-$swift_version-RELEASE-ubuntu20.04
     tar_file_name=${folder_name}.tar.gz
     curl -O "https://download.swift.org/swift-$swift_version-release/ubuntu2004/swift-$swift_version-RELEASE/$tar_file_name"
@@ -84,7 +87,7 @@ if [[ -e $swift_path ]]; then
     else
         echo "Swift 版本${now_version}已存在，删除，下载版本${latest_version}"
         sudo rm -rf $swift_path
-        download_swift_package
+        download_swift_package ${latest_version}
     fi
 else
     echo "swift路径不存在，第一次下载"
