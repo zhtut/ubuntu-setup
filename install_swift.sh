@@ -73,7 +73,10 @@ else
 fi
 
 if [[ -e $swift_path ]]; then
-    now_version=$(swift --version)
+    now_version="$1"
+    if [[ ${now_version} == "" ]]; then
+        now_version=$(swift --version)
+    fi
     latest_version=$(get_latest_swift_version)
     version_str="Swift version ${latest_version} "
     if [[ ${now_version} =~ ${version_str} ]]; then
