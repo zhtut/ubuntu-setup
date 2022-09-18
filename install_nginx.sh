@@ -37,5 +37,5 @@ if [[ ${need_reboot} == 1 ]]; then
     echo "重启nginx"
     sudo service nginx restart
 else
-   echo '不需要重启nginx'
+    echo '不需要重启nginx'
 fi

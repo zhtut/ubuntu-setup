@@ -1,4 +1,3 @@
-
 if [[ $(apt list | grep postgresql) =~ "postgresql" ]]; then
     echo '已安装postgresql'
 else
@@ -10,18 +9,17 @@ origin="#listen_addresses = 'localhost'"
 replace="listen_addresses = '*'"
 
 if [[ $(sudo cat ${postgresql_conf}) =~ "${replace}" ]]; then
-   echo "不需要修改监听地址，已经是：${replace}"
+    echo "不需要修改监听地址，已经是：${replace}"
 else
     echo "修改监听地址"
     sudo sed -i "s|${origin}|${replace}|" ${postgresql_conf}
     echo $(sudo cat ${postgresql_conf} | grep "listen_addresses")
 fi
 
-
 pg_hba_conf="/etc/postgresql/*/main/pg_hba.conf"
 host="host all all 0.0.0.0/0 md5"
 if [[ $(sudo cat ${pg_hba_conf}) =~ "${host}" ]]; then
-   echo "不需要修改可访问的ip段，已经包含：${host}"
+    echo "不需要修改可访问的ip段，已经包含：${host}"
 else
     echo "修改可访问的ip段"
     echo "${host}" | sudo tee -a ${pg_hba_conf}
@@ -30,7 +28,7 @@ fi
 
 host_ipv6="host all all ::0/0 md5"
 if [[ $(sudo cat ${pg_hba_conf}) =~ "${host_ipv6}" ]]; then
-   echo "不需要修改可访问的ip段，已经包含：${host_ipv6}"
+    echo "不需要修改可访问的ip段，已经包含：${host_ipv6}"
 else
     echo "修改可访问的ip段"
     echo "${host_ipv6}" | sudo tee -a ${pg_hba_conf}

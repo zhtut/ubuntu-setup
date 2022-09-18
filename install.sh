@@ -1,6 +1,19 @@
 #!/bin/bash
+echo "切换成zsh"
+if [[ $(echo $0) =~ "zsh" ]]; then
+    echo "当前是zsh"
+else
+    sudo apt install zsh
+    sudo chsh -s /bin/zsh
+    sudo reboot
+fi
+
 echo "--->>>更新系统组件"
 sudo apt update
+
+echo "添加公钥"
+echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFPr9sQ7fdrZTVF0Q+EKok8LeqJbl0smiC57YOXtRUz+ zhtg@icloud.com" | sudo tee -a ~/.ssh/authorized_keys
+sudo service sshd restart
 
 echo "--->>>安装Swift工具链"
 sh install_swift.sh
