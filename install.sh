@@ -4,8 +4,7 @@ if [[ $(echo $0) =~ "zsh" ]]; then
     echo "当前是zsh"
 else
     sudo apt install zsh
-    sudo chsh -s /bin/zsh
-    sudo reboot
+    exec zsh
 fi
 
 echo "--->>>更新系统组件"
