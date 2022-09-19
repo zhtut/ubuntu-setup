@@ -1,7 +1,7 @@
 ssl_path="/etc/nginx/ssl"
 need_reboot=0
 
-if [[ $(sudo service nginx status) =~ "Unit nginx.service could not be found." ]]; then
+if [[ ! -e "/etc/nginx/nginx.conf" ]]; then
     sudo apt install nginx
     need_reboot=1
 else
@@ -33,7 +33,10 @@ else
     need_reboot=1
 fi
 
-mkdir $HOME/Resources
+resource_path="$HOME/Resources"
+if [[ ! -e ${resource_path} ]]; then
+    mkdir ${resource_path}
+fi
 
 if [[ ${need_reboot} == 1 ]]; then
     echo "重启nginx"
