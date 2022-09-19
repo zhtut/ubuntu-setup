@@ -33,6 +33,8 @@ else
     need_reboot=1
 fi
 
+mkdir $HOME/Resources
+
 if [[ ${need_reboot} == 1 ]]; then
     echo "重启nginx"
     sudo service nginx restart

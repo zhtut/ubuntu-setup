@@ -15,19 +15,19 @@ echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFPr9sQ7fdrZTVF0Q+EKok8LeqJbl0smiC57YO
 sudo service sshd restart
 
 echo "--->>>安装Swift工具链"
-sh install_swift.sh
+zsh install_swift.sh
 
 echo "--->>>安装nginx"
-sh install_nginx.sh
+zsh install_nginx.sh
 
 echo "--->>>开启swap交换"
-sh open_swap.sh
+zsh open_swap.sh
 
 echo "--->>>安装supervisor"
-sh install_supervisor.sh
+zsh install_supervisor.sh
 
 echo "--->>>clone repos"
-sh clone_repo.sh
+zsh clone_repo.sh
 
 echo "--->>>安装postgres"
-sh install_postgres.sh
+zsh install_postgres.sh
